@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Ganache - Local Ethereum Blockchain
+  ganache:
+    image: trufflesuite/ganache:latest
+    container_name: chainfl-ganache
+    ports:
+      - "8545:8545"
+    command: >
+      --mnemonic "test test test test test test test test test test test junk"
+      --networkId 1337
+      --chainId 1337
+      --accounts 10
+      --defaultBalanceEther 1000
+      --gasLimit 10000000
+      --gasPrice 1
+    networks:
+      - chainfl-network
+
+  # Backend - FastAPI
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chainfl-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - WEB3_RPC_URL=http://ganache:8545
+      - CONSENT_CONTRACT_ADDRESS=${CONSENT_CONTRACT_ADDRESS}
+      - NODE_REGISTRY_ADDRESS=${NODE_REGISTRY_ADDRESS}
+    depends_on:
+      - ganache
+    volumes:
+      - ./backend:/app
+    command: >
+      sh -c "
+        echo 'Waiting for Ganache...' &&
+        sleep 5 &&
+        python blockchain/deploy.py &&
+        uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      "
+    networks:
+      - chainfl-network
+
+  # Frontend - React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: chainfl-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+    networks:
+      - chainfl-network
+
+networks:
+  chainfl-network:
+    driver: bridge

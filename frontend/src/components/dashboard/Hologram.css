@@ -1,0 +1,155 @@
+.hologram-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+.ring-outer {
+    width: 280px;
+    height: 280px;
+    border-top: 2px solid var(--neon-cyan);
+    border-bottom: 2px solid rgba(0, 243, 255, 0.3);
+    animation: spin 10s linear infinite;
+}
+
+.ring-middle {
+    width: 220px;
+    height: 220px;
+    border-left: 2px solid var(--electric-purple);
+    border-right: 2px solid rgba(188, 19, 254, 0.3);
+    animation: spin-reverse 8s linear infinite;
+}
+
+.ring-inner {
+    width: 160px;
+    height: 160px;
+    border-top: 2px solid var(--medical-teal);
+    border-bottom: 2px dashed rgba(10, 255, 194, 0.5);
+    animation: spin 6s linear infinite;
+}
+
+.heart-core {
+    position: relative;
+    z-index: 10;
+    animation: float 4s ease-in-out infinite;
+}
+
+.heart-icon-main {
+    color: var(--alert-red);
+    filter: drop-shadow(0 0 10px var(--alert-red));
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.heart-icon-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--alert-red);
+    opacity: 0.5;
+    filter: blur(5px);
+    animation: heartbeat 1.5s ease-in-out infinite 0.1s;
+}
+
+.heart-icon-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: cyan;
+    opacity: 0.3;
+    mix-blend-mode: overlay;
+    animation: glitch 2s infinite;
+}
+
+.score-display {
+    position: absolute;
+    bottom: -40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.score-label {
+    font-family: var(--font-tech);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--medical-teal);
+    text-shadow: 0 0 5px var(--medical-teal);
+}
+
+.score-value {
+    font-family: var(--font-tech);
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(to bottom, #fff, var(--neon-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.5));
+}
+
+@keyframes spin {
+    0% {
+        transform: rotateX(60deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(60deg) rotateZ(360deg);
+    }
+}
+
+@keyframes spin-reverse {
+    0% {
+        transform: rotateX(60deg) rotateZ(360deg);
+    }
+
+    100% {
+        transform: rotateX(60deg) rotateZ(0deg);
+    }
+}
+
+@keyframes heartbeat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    10%,
+    20% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes glitch {
+    0% {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+
+    5% {
+        transform: translate(-2px, 2px);
+        opacity: 0.5;
+    }
+
+    10% {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(0, 0);
+        opacity: 0;
+    }
+}

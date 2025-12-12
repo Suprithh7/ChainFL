@@ -1,0 +1,136 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "patientID",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "hospitalID",
+        "type": "string"
+      }
+    ],
+    "name": "grantConsent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "patientID",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "hospitalID",
+        "type": "string"
+      }
+    ],
+    "name": "revokeConsent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "patientID",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "hospitalID",
+        "type": "string"
+      }
+    ],
+    "name": "hasConsent",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "patientID",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "hospitalID",
+        "type": "string"
+      }
+    ],
+    "name": "getConsentTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "patientID",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "hospitalID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "ConsentGranted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "patientID",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "hospitalID",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "ConsentRevoked",
+    "type": "event"
+  }
+]

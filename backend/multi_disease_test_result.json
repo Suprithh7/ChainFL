@@ -1,0 +1,250 @@
+{
+  "risk_score": 90.7,
+  "risk_category": "Critical",
+  "recommendation": "URGENT: Immediate cardiology consultation required. Consider emergency admission and comprehensive cardiac workup including angiography.",
+  "top_factors": [
+    {
+      "name": "Age",
+      "points": 19.0,
+      "severity": "High"
+    },
+    {
+      "name": "Troponin",
+      "points": 19.0,
+      "severity": "High"
+    },
+    {
+      "name": "ST Depression",
+      "points": 18.4,
+      "severity": "High"
+    }
+  ],
+  "forecast": [
+    {
+      "day": 1,
+      "risk_score": 91.0,
+      "date": "2025-12-13"
+    },
+    {
+      "day": 2,
+      "risk_score": 90.2,
+      "date": "2025-12-14"
+    },
+    {
+      "day": 3,
+      "risk_score": 88.0,
+      "date": "2025-12-15"
+    },
+    {
+      "day": 4,
+      "risk_score": 85.7,
+      "date": "2025-12-16"
+    },
+    {
+      "day": 5,
+      "risk_score": 84.1,
+      "date": "2025-12-17"
+    },
+    {
+      "day": 6,
+      "risk_score": 82.3,
+      "date": "2025-12-18"
+    },
+    {
+      "day": 7,
+      "risk_score": 83.2,
+      "date": "2025-12-19"
+    },
+    {
+      "day": 8,
+      "risk_score": 84.4,
+      "date": "2025-12-20"
+    },
+    {
+      "day": 9,
+      "risk_score": 85.5,
+      "date": "2025-12-21"
+    },
+    {
+      "day": 10,
+      "risk_score": 84.1,
+      "date": "2025-12-22"
+    },
+    {
+      "day": 11,
+      "risk_score": 83.6,
+      "date": "2025-12-23"
+    },
+    {
+      "day": 12,
+      "risk_score": 82.9,
+      "date": "2025-12-24"
+    },
+    {
+      "day": 13,
+      "risk_score": 81.0,
+      "date": "2025-12-25"
+    },
+    {
+      "day": 14,
+      "risk_score": 81.0,
+      "date": "2025-12-26"
+    },
+    {
+      "day": 15,
+      "risk_score": 80.0,
+      "date": "2025-12-27"
+    },
+    {
+      "day": 16,
+      "risk_score": 77.9,
+      "date": "2025-12-28"
+    },
+    {
+      "day": 17,
+      "risk_score": 78.6,
+      "date": "2025-12-29"
+    },
+    {
+      "day": 18,
+      "risk_score": 77.9,
+      "date": "2025-12-30"
+    },
+    {
+      "day": 19,
+      "risk_score": 76.5,
+      "date": "2025-12-31"
+    },
+    {
+      "day": 20,
+      "risk_score": 76.5,
+      "date": "2026-01-01"
+    }
+  ],
+  "multi_disease_risks": {
+    "diabetes": {
+      "risk_score": 79.0,
+      "risk_category": "Critical",
+      "top_factors": [
+        {
+          "name": "High HbA1c",
+          "points": 30,
+          "severity": "Critical"
+        },
+        {
+          "name": "Elevated Glucose",
+          "points": 25,
+          "severity": "High"
+        },
+        {
+          "name": "Obesity",
+          "points": 20,
+          "severity": "High"
+        }
+      ],
+      "recommendation": "Immediate endocrinologist consultation required. Start insulin therapy evaluation."
+    },
+    "kidney": {
+      "risk_score": 65,
+      "risk_category": "High",
+      "top_factors": [
+        {
+          "name": "Moderate GFR Reduction",
+          "points": 25,
+          "severity": "High"
+        },
+        {
+          "name": "Elevated Creatinine",
+          "points": 20,
+          "severity": "High"
+        },
+        {
+          "name": "Microalbuminuria",
+          "points": 10,
+          "severity": "Moderate"
+        }
+      ],
+      "recommendation": "Nephrology consultation recommended. Monitor kidney function closely. Adjust medications for renal function."
+    },
+    "liver": {
+      "risk_score": 56,
+      "risk_category": "High",
+      "top_factors": [
+        {
+          "name": "Elevated ALT",
+          "points": 15,
+          "severity": "High"
+        },
+        {
+          "name": "Elevated AST",
+          "points": 15,
+          "severity": "High"
+        },
+        {
+          "name": "Elevated Bilirubin",
+          "points": 10,
+          "severity": "High"
+        }
+      ],
+      "recommendation": "Gastroenterology referral recommended. Liver function monitoring. Medication review essential."
+    },
+    "hypertension": {
+      "risk_score": 80,
+      "risk_category": "Critical",
+      "top_factors": [
+        {
+          "name": "Stage 2 Hypertension",
+          "points": 30,
+          "severity": "High"
+        },
+        {
+          "name": "High Diastolic BP",
+          "points": 20,
+          "severity": "High"
+        },
+        {
+          "name": "Obesity",
+          "points": 15,
+          "severity": "High"
+        }
+      ],
+      "recommendation": "Emergency BP management required. Multiple antihypertensive medications likely needed. Daily monitoring essential."
+    }
+  },
+  "shap_values": {
+    "contributions": [
+      {
+        "feature": "Troponin",
+        "value": 0.35,
+        "positive": true
+      },
+      {
+        "feature": "Ejection Fraction",
+        "value": 0.25,
+        "positive": true
+      },
+      {
+        "feature": "ST Depression",
+        "value": 0.2,
+        "positive": true
+      },
+      {
+        "feature": "Age",
+        "value": 0.15,
+        "positive": true
+      },
+      {
+        "feature": "Creatinine",
+        "value": 0.18,
+        "positive": true
+      },
+      {
+        "feature": "Max Heart Rate",
+        "value": 0.08,
+        "positive": true
+      }
+    ],
+    "base_value": 0.3
+  },
+  "timestamp": "2025-12-12T20:53:41.666242"
+}
