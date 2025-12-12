@@ -11,8 +11,16 @@ const EditPDFModal = ({ patient, onClose }) => {
   });
 
   const handleDownload = () => {
-    generatePatientPDF(patient, editedData);
-    onClose();
+    try {
+      console.log('📄 Generating PDF for patient:', patient.name);
+      console.log('📝 Edited data:', editedData);
+      generatePatientPDF(patient, editedData);
+      console.log('✅ PDF generated successfully');
+      onClose();
+    } catch (error) {
+      console.error('❌ PDF generation failed:', error);
+      alert('Failed to generate PDF: ' + error.message);
+    }
   };
 
   return (

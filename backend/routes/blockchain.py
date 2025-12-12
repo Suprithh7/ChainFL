@@ -3,7 +3,7 @@ Blockchain API routes for patient consent and node registry.
 """
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import sys
 from pathlib import Path
 
@@ -12,6 +12,8 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from blockchain import blockchain_utils
 from blockchain.web3_client import is_connected
+from utils.otp_service import send_email_otp, verify_otp, get_otp_status
+from data.patients_store import get_patient_by_id
 
 router = APIRouter()
 
@@ -48,7 +50,116 @@ class NodeVerifyResponse(BaseModel):
     details: Dict[str, Any] = {}
 
 
-# ============= CONSENT ENDPOINTS =============
+class OTPRequest(BaseModel):
+    patient_id: str
+    hospital_id: str
+
+
+class OTPVerifyRequest(BaseModel):
+    patient_id: str
+    hospital_id: str
+    otp: str
+
+
+class OTPResponse(BaseModel):
+    success: bool
+    message: str
+    email: Optional[str] = None
+    otp_for_demo: Optional[str] = None  # Only for demo/testing
+
+
+# ============= CONSENT ENDPOINTS (WITH OTP) =============
+
+@router.post("/consent/request-otp")
+async def request_consent_otp(request: OTPRequest):
+    """
+    Request OTP for patient consent verification.
+    Sends OTP to patient's email address.
+    """
+    # Get patient details
+    patient = get_patient_by_id(request.patient_id)
+    if not patient:
+        raise HTTPException(status_code=404, detail=f"Patient {request.patient_id} not found")
+    
+    # Check if patient has email
+    if not hasattr(patient, 'contact') or not patient.contact or '@' not in patient.contact:
+        raise HTTPException(
+            status_code=400, 
+            detail="Patient email not found. Please update patient record with email address."
+        )
+    
+    patient_email = patient.contact
+    patient_name = patient.name
+    
+    # Send OTP via email
+    success, message, otp_demo = send_email_otp(patient_email, patient_name)
+    
+    if success:
+        return OTPResponse(
+            success=True,
+            message=f"OTP sent to {patient_email}",
+            email=patient_email,
+            otp_for_demo=otp_demo  # Include OTP in response for demo (remove in production)
+        )
+    else:
+        raise HTTPException(status_code=500, detail=message)
+
+
+@router.post("/consent/verify-and-grant", response_model=ConsentResponse)
+async def verify_otp_and_grant_consent(request: OTPVerifyRequest):
+    """
+    Verify OTP and grant consent if OTP is valid.
+    This ensures only the patient can authorize data access.
+    """
+    if not is_connected():
+        raise HTTPException(status_code=503, detail="Blockchain not connected")
+    
+    # Get patient details
+    patient = get_patient_by_id(request.patient_id)
+    if not patient:
+        raise HTTPException(status_code=404, detail=f"Patient {request.patient_id} not found")
+    
+    patient_email = patient.contact
+    
+    # Verify OTP
+    otp_valid, otp_message = verify_otp(patient_email, request.otp)
+    
+    if not otp_valid:
+        raise HTTPException(status_code=401, detail=otp_message)
+    
+    # OTP is valid - grant consent on blockchain
+    success, tx_hash = blockchain_utils.grant_consent(
+        request.patient_id,
+        request.hospital_id
+    )
+    
+    if success:
+        return ConsentResponse(
+            success=True,
+            message=f"✅ OTP verified. Consent granted for patient {request.patient_id} to hospital {request.hospital_id}",
+            transaction_hash=tx_hash,
+            has_consent=True
+        )
+    else:
+        raise HTTPException(status_code=500, detail=f"OTP verified but blockchain transaction failed: {tx_hash}")
+
+
+@router.get("/consent/otp-status/{patient_id}")
+async def get_otp_status_endpoint(patient_id: str):
+    """Get OTP status for a patient (for debugging/admin)."""
+    patient = get_patient_by_id(patient_id)
+    if not patient:
+        raise HTTPException(status_code=404, detail=f"Patient {patient_id} not found")
+    
+    patient_email = patient.contact
+    status = get_otp_status(patient_email)
+    
+    if status:
+        return status
+    else:
+        return {"message": "No active OTP for this patient"}
+
+
 
 @router.post("/consent/grant", response_model=ConsentResponse)
 async def grant_consent(request: ConsentRequest):

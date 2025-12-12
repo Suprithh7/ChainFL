@@ -9,6 +9,10 @@ from typing import List, Dict, Any, Optional
 import pandas as pd
 import io
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -41,9 +45,10 @@ app.add_middleware(
 )
 
 # Import and include patient routes
-from routes import blockchain
-# app.include_router(patients.router)  # Disabled - using new patient storage system
+from routes import blockchain, patients
+app.include_router(patients.router)
 app.include_router(blockchain.router, prefix="/blockchain", tags=["blockchain"])
+
 
 
 # Pydantic models for request/response validation
@@ -409,86 +414,3 @@ async def get_logs():
     """Get recent prediction logs."""
     return {"logs": prediction_logs[-10:]}  # Return last 10 logs
 
-
-# ============= PATIENT RECORDS ENDPOINTS =============
-
-from data.patients_store import (
-    PatientRecord,
-    add_patient,
-    get_all_patients,
-    get_patient_by_id,
-    update_patient,
-    delete_patient,
-    get_patient_count,
-    get_high_risk_patients
-)
-import uuid
-
-
-@app.post("/api/patients")
-async def save_patient(patient_data: Dict[str, Any]):
-    """Save a patient record with prediction results."""
-    try:
-        # Generate unique ID
-        patient_id = str(uuid.uuid4())[:8]
-        
-        # Create patient record
-        patient = PatientRecord(
-            id=patient_id,
-            **patient_data
-        )
-        
-        # Save to storage
-        saved_patient = add_patient(patient)
-        logger.info(f"Saved patient: {saved_patient.name} (ID: {patient_id})")
-        
-        return {
-            "success": True,
-            "patient_id": patient_id,
-            "message": "Patient record saved successfully"
-        }
-    except Exception as e:
-        logger.error(f"Error saving patient: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/api/patients")
-async def list_patients():
-    """Get all patient records."""
-    try:
-        patients = get_all_patients()
-        return {
-            "patients": [p.dict() for p in patients],
-            "total": len(patients),
-            "high_risk_count": len(get_high_risk_patients())
-        }
-    except Exception as e:
-        logger.error(f"Error fetching patients: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/api/patients/{patient_id}")
-async def get_patient(patient_id: str):
-    """Get a specific patient by ID."""
-    patient = get_patient_by_id(patient_id)
-    if not patient:
-        raise HTTPException(status_code=404, detail="Patient not found")
-    return patient.dict()
-
-
-@app.put("/api/patients/{patient_id}")
-async def update_patient_record(patient_id: str, updates: Dict[str, Any]):
-    """Update a patient record."""
-    patient = update_patient(patient_id, updates)
-    if not patient:
-        raise HTTPException(status_code=404, detail="Patient not found")
-    return {"success": True, "patient": patient.dict()}
-
-
-@app.delete("/api/patients/{patient_id}")
-async def remove_patient(patient_id: str):
-    """Delete a patient record."""
-    success = delete_patient(patient_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Patient not found")
-    return {"success": True, "message": "Patient deleted successfully"}

@@ -245,12 +245,17 @@ const PatientPrediction = () => {
                                             </select>
                                         </div>
                                         <div className="form-group" style={{ gridColumn: '1 / -1' }}>
-                                            <label className="form-label" style={{ color: 'white' }}>Contact Number</label>
+                                            <label className="form-label" style={{ color: 'white' }}>
+                                                Email Address / Contact Number
+                                                <span style={{ fontSize: '11px', marginLeft: '8px', opacity: 0.8 }}>
+                                                    (Email required for OTP consent verification)
+                                                </span>
+                                            </label>
                                             <input
                                                 name="contact"
-                                                type="tel"
+                                                type="text"
                                                 className="form-input"
-                                                placeholder="+1 (555) 123-4567"
+                                                placeholder="patient@example.com or +1 (555) 123-4567"
                                                 value={formData.contact}
                                                 onChange={handleChange}
                                                 style={{ background: 'rgba(255,255,255,0.9)' }}
