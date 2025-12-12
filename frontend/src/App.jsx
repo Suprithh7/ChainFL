@@ -9,6 +9,7 @@ import SystemMonitor from './pages/SystemMonitor';
 import PatientRecords from './pages/PatientRecords';
 import ConsentManagement from './pages/ConsentManagement';
 import NodeRegistry from './pages/NodeRegistry';
+import { ActivityLogProvider } from './context/ActivityLogContext';
 import './App.css';
 
 function App() {
@@ -23,20 +24,22 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <TopNavbar />
-      <div className="main-content">
-        <Routes>
-          <Route path="/" element={<DoctorDashboard />} />
-          <Route path="/prediction" element={<PatientPrediction />} />
-          <Route path="/records" element={<PatientRecords />} />
-          <Route path="/consent" element={<ConsentManagement />} />
-          <Route path="/nodes" element={<NodeRegistry />} />
-          <Route path="/fl-simulation" element={<FLSimulation />} />
-          <Route path="/monitor" element={<SystemMonitor />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <ActivityLogProvider>
+      <BrowserRouter>
+        <TopNavbar />
+        <div className="main-content">
+          <Routes>
+            <Route path="/" element={<DoctorDashboard />} />
+            <Route path="/prediction" element={<PatientPrediction />} />
+            <Route path="/records" element={<PatientRecords />} />
+            <Route path="/consent" element={<ConsentManagement />} />
+            <Route path="/nodes" element={<NodeRegistry />} />
+            <Route path="/fl-simulation" element={<FLSimulation />} />
+            <Route path="/monitor" element={<SystemMonitor />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </ActivityLogProvider>
   );
 }
 

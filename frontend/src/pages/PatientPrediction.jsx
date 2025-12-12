@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Upload, FileText, Activity } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import CSVUpload from '../components/prediction/CSVUpload';
+import { useActivityLog } from '../context/ActivityLogContext';
 
 const PatientPrediction = () => {
     const location = useLocation();
+    const { logAction, logSuccess, logError } = useActivityLog();
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('manual'); // 'manual' or 'csv'
@@ -60,6 +62,7 @@ const PatientPrediction = () => {
 
     const handlePredict = async (e) => {
         e.preventDefault();
+        logAction('Risk prediction initiated', formData.name || 'Unnamed patient');
         setLoading(true);
 
         try {
@@ -143,6 +146,7 @@ const PatientPrediction = () => {
                             timestamp: data.timestamp
                         })
                     });
+                    logSuccess('Patient record saved to database', formData.name);
                     console.log('✅ Patient record saved');
                 } catch (saveError) {
                     console.error('Failed to save patient:', saveError);
@@ -150,6 +154,7 @@ const PatientPrediction = () => {
             }
         } catch (error) {
             console.error('Prediction error:', error);
+            logError('Risk prediction failed', error.message);
             alert(`Error: ${error.message}. Make sure the backend is running on http://127.0.0.1:8000`);
         } finally {
             setLoading(false);

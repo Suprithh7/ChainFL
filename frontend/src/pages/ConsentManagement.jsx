@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Check, X, Mail, Key, Clock } from 'lucide-react';
+import { useActivityLog } from '../context/ActivityLogContext';
 
 const ConsentManagement = () => {
+  const { logAction, logSuccess, logError } = useActivityLog();
   const [consents, setConsents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -34,6 +36,7 @@ const ConsentManagement = () => {
       return;
     }
 
+    logAction('OTP request initiated', `Patient: ${formData.patient_id}`);
     setLoading(true);
 
     try {
@@ -53,8 +56,16 @@ const ConsentManagement = () => {
         setOtpEmail(data.email);
         setOtpTimer(300); // 5 minutes
         setOtpDemo(data.otp_for_demo || ''); // Store demo OTP
+
+        if (data.otp_for_demo) {
+          logAction('OTP sent (demo mode)', `Patient: ${formData.patient_id}, Email: ${data.email}`);
+        } else {
+          logSuccess('OTP sent to patient email', `Patient: ${formData.patient_id}, Email: ${data.email}`);
+        }
+
         alert(`✅ OTP sent to ${data.email}\n\n🔐 [DEMO MODE] Your OTP is: ${data.otp_for_demo}\n\nIn production, this would be sent via email.`);
       } else {
+        logError('OTP request failed', data.detail);
         alert(`❌ Error: ${data.detail}`);
       }
     } catch (error) {
@@ -71,6 +82,7 @@ const ConsentManagement = () => {
       return;
     }
 
+    logAction('Verifying OTP and granting consent', `Patient: ${formData.patientId}`);
     setLoading(true);
 
     try {
@@ -87,6 +99,7 @@ const ConsentManagement = () => {
       const data = await response.json();
 
       if (response.ok) {
+        logSuccess('Consent granted on blockchain', `Patient: ${formData.patient_id}, Tx: ${data.transaction_hash.substring(0, 12)}...`);
         alert(`✅ OTP Verified! Consent granted successfully!\n\nTransaction Hash: ${data.transaction_hash}`);
         setFormData({ patient_id: '', hospital_id: '', otp: '' });
         setOtpSent(false);
@@ -94,9 +107,11 @@ const ConsentManagement = () => {
         setOtpDemo('');
         checkConsent();
       } else {
+        logError('Consent grant failed', data.detail);
         alert(`❌ Error: ${data.detail}`);
       }
     } catch (error) {
+      logError('Consent grant error', error.message);
       alert(`❌ Error: ${error.message}`);
     } finally {
       setLoading(false);
@@ -353,41 +368,6 @@ const ConsentManagement = () => {
               )}
             </div>
           </form>
-        </div>
-
-        {/* Info Card */}
-        <div className="card" style={{ marginTop: '24px' }}>
-          <h3 className="card-title">🔐 How OTP Verification Works</h3>
-          <div style={{ fontSize: '14px', lineHeight: '1.8', color: '#6c757d' }}>
-            <p><strong>1. Request OTP:</strong> Enter Patient ID and Hospital ID, then click "Request OTP".</p>
-            <p><strong>2. Receive OTP:</strong> Patient receives a 6-digit OTP via email (valid for 5 minutes).</p>
-            <p><strong>3. Verify Identity:</strong> Patient shares the OTP to verify they authorize the consent.</p>
-            <p><strong>4. Grant Consent:</strong> Enter OTP and click "Verify OTP & Grant Consent".</p>
-            <p><strong>5. Blockchain Record:</strong> Consent is recorded on the blockchain with an immutable audit trail.</p>
-          </div>
-
-          <div style={{
-            marginTop: '20px',
-            padding: '12px',
-            background: '#fff3cd',
-            borderRadius: '6px',
-            fontSize: '13px',
-            color: '#856404',
-            border: '1px solid #ffc107'
-          }}>
-            <strong>🔐 Security:</strong> This OTP system ensures that only the actual patient can grant consent to their medical data, preventing unauthorized access by doctors or staff.
-          </div>
-
-          <div style={{
-            marginTop: '12px',
-            padding: '12px',
-            background: '#f8f9fa',
-            borderRadius: '6px',
-            fontSize: '13px',
-            color: '#495057'
-          }}>
-            <strong>⚠️ Note:</strong> Make sure Ganache is running on http://127.0.0.1:8545 and contracts are deployed.
-          </div>
         </div>
       </div>
     </div>
