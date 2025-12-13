@@ -107,7 +107,7 @@ SYSTEM ARCHITECTURE
 
 ## 📊 ML Model Details
 
-- Algorithm: RandomForest Classifier
+- Algorithm: RandomForest Classifier , 1D CNN for ECG
 - Accuracy: ~85–95% (improves with FL rounds)
 - Explainability: SHAP values
 - Disease Coverage: Multi-disease
