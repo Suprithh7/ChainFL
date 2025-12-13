@@ -103,6 +103,7 @@ SYSTEM ARCHITECTURE
 - HIPAA & GDPR-aligned design
 
 ---
+![Security)(sec.jpeg)
 
 ## 📊 ML Model Details
 
