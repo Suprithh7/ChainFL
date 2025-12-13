@@ -63,6 +63,7 @@ This severely limits the potential of AI in critical disease prediction and prev
 - Compliance and audit reports
 
 ---
+SYSTEM ARCHITECTURE
 
 ![System Architecture](sa.jpeg)
 
