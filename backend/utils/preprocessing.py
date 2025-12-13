@@ -17,7 +17,7 @@ def validate_input(data: Dict[str, Any]) -> tuple[bool, str]:
         'age': (0, 120, 'Age must be between 0-120 years'),
         'bp': (60, 250, 'Blood pressure must be between 60-250 mmHg'),
         'cholesterol': (100, 600, 'Cholesterol must be between 100-600 mg/dL'),
-        'glucose': (0, 1, 'Glucose must be 0 or 1'),
+        'glucose': (0, 400, 'Glucose must be between 0-400 mg/dL'),
         'maxHr': (40, 220, 'Max heart rate must be between 40-220 bpm'),
         'stDepression': (0, 10, 'ST Depression must be between 0-10'),
         'troponin': (0, 50, 'Troponin must be between 0-50 ng/mL'),
@@ -183,9 +183,11 @@ def calculate_risk_score(data: Dict[str, Any]) -> Dict[str, Any]:
     if max_hr < 100:
         risk += (100 - max_hr) * 0.1
     
-    # Glucose
-    if int(data['glucose']) == 1:
-        risk += 5
+    # Glucose (0-10 points)
+    glucose = float(data['glucose'])
+    if glucose > 120:
+        glucose_points = min(10, (glucose - 120) * 0.05)
+        risk += glucose_points
     
     # Cap risk at 99%
     risk = min(99, max(1, risk))

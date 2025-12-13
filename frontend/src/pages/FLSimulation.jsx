@@ -12,7 +12,7 @@ const FLSimulation = () => {
     const [loading, setLoading] = useState(false);
     const [training, setTraining] = useState(false);
     const [autoTraining, setAutoTraining] = useState(false);
-    const [maxRounds, setMaxRounds] = useState(15);
+    const [maxRounds, setMaxRounds] = useState(3);
     const autoTrainingRef = useRef(null);
 
     useEffect(() => {
@@ -142,8 +142,8 @@ const FLSimulation = () => {
             const success = await runSingleRound();
 
             if (success && autoTrainingRef.current !== null) {
-                // Schedule next round after 2 seconds
-                autoTrainingRef.current = setTimeout(runNextRound, 2000);
+                // Schedule next round after 100ms (instant for demo)
+                autoTrainingRef.current = setTimeout(runNextRound, 100);
             }
         };
 

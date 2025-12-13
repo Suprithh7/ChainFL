@@ -54,16 +54,19 @@ app.include_router(blockchain.router, prefix="/blockchain", tags=["blockchain"])
 # Pydantic models for request/response validation
 class PatientData(BaseModel):
     """Patient clinical data for risk prediction."""
+    # Required basic fields
     age: float = Field(..., ge=0, le=120, description="Age in years")
     bp: float = Field(..., ge=60, le=250, description="Resting blood pressure (mmHg)")
     cholesterol: float = Field(..., ge=100, le=600, description="Cholesterol (mg/dL)")
-    glucose: int = Field(..., ge=0, le=1, description="Fasting blood sugar > 120 (0=no, 1=yes)")
-    maxHr: float = Field(..., ge=40, le=220, description="Maximum heart rate")
-    stDepression: float = Field(..., ge=0, le=10, description="ST depression induced by exercise")
-    troponin: float = Field(..., ge=0, le=50, description="Troponin level (ng/mL)")
-    ejectionFraction: float = Field(..., ge=10, le=80, description="Ejection fraction (%)")
-    creatinine: float = Field(..., ge=0.3, le=15, description="Serum creatinine (mg/dL)")
-    bmi: float = Field(..., ge=10, le=60, description="Body Mass Index")
+    glucose: float = Field(..., ge=0, le=400, description="Fasting blood sugar (mg/dL)")
+    
+    # Optional clinical fields with defaults
+    maxHr: float = Field(150, ge=40, le=220, description="Maximum heart rate")
+    stDepression: float = Field(0, ge=0, le=10, description="ST depression induced by exercise")
+    troponin: float = Field(0, ge=0, le=50, description="Troponin level (ng/mL)")
+    ejectionFraction: float = Field(60, ge=10, le=80, description="Ejection fraction (%)")
+    creatinine: float = Field(1.0, ge=0.3, le=15, description="Serum creatinine (mg/dL)")
+    bmi: float = Field(25, ge=10, le=60, description="Body Mass Index")
     
     # Additional parameters for multi-disease prediction (optional)
     hba1c: Optional[float] = Field(None, ge=4.0, le=14.0, description="Hemoglobin A1c (%)")
